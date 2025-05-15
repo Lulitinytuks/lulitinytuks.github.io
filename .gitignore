@@ -1,0 +1,40 @@
+# Hugo build output
+/public/
+/resources/_gen/
+/.hugo_build.lock
+
+# Node modules (if using PostCSS, Tailwind, etc.)
+node_modules/
+
+# Build artifacts
+.DS_Store
+Thumbs.db
+
+# OS-specific files
+ehthumbs.db
+Icon?
+desktop.ini
+
+# Backup files
+*.bak
+*.swp
+*.swo
+*.tmp
+*.orig
+
+# Hugo cache
+hugo_stats.json
+
+# Logs
+*.log
+
+# VS Code settings
+.vscode/
+
+# Netlify / Vercel / other deployment folders
+.netlify/
+.vercel/
+
+# Environment files
+.env
+.env.*
