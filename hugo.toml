@@ -1,0 +1,4 @@
+baseURL = 'https://lulitinytuks.github.io/'
+languageCode = 'en-us'
+title = 'Lulita Personal WebSite'
+theme = 'hugo-refresh'
