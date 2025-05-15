@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Francisco Pizarro's Expeditions (1513–1533)</title>
+    <meta charset="utf-8">
+    <style>
+        #map {
+            height: 800px;
+            width: 100%;
+        }
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="legend">
+        <h3>Expedition Routes</h3>
+        <p><span style="color:#4B0082">⬤</span> 1513: Balboa's Darién Expedition</p>
+        <p><span style="color:#FFA500">⬤</span> 1524–1528: Early Reconnaissance</p>
+        <p><span style="color:#FF0000">⬤</span> 1531–1533: Conquest of Peru</p>
+        <p><span style="color:#000000">⬤</span> Key Battles/Events</p>
+    </div>
+
+    <script>
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 5,
+                center: { lat: -5, lng: -75 },
+                mapTypeId: "hybrid"
+            });
+
+            // Key Locations
+            const locations = {
+                panama: { lat: 8.9943, lng: -79.5188, name: "Panama City (Base)" },
+                darien: { lat: 8.4542, lng: -77.9664, name: "Darién Crossing (1513)" },
+                sanJuan: { lat: 2.6333, lng: -77.9000, name: "San Juan River (1524)" },
+                tumbes: { lat: -3.5667, lng: -80.4414, name: "Tumbes (1532 Landing)" },
+                puna: { lat: -3.4833, lng: -80.1833, name: "Puná Island (1531)" },
+                cajamarca: { lat: -7.1644, lng: -78.5106, name: "Cajamarca (Atahualpa Capture)" },
+                cusco: { lat: -13.5319, lng: -71.9675, name: "Cusco (1533)" },
+                lima: { lat: -12.0464, lng: -77.0428, name: "Lima (Founded 1535)" }
+            };
+
+            // 1513: Balboa's Darién Expedition
+            const route1513 = new google.maps.Polyline({
+                path: [
+                    { lat: 9.5500, lng: -78.9500 }, // Caribbean Coast
+                    locations.darien,
+                    { lat: 8.9667, lng: -79.5333 }  // Pacific Discovery
+                ],
+                geodesic: true,
+                strokeColor: "#4B0082",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            // 1524–1528 Reconnaissance
+            const route1524 = new google.maps.Polyline({
+                path: [
+                    locations.panama,
+                    locations.sanJuan,
+                    { lat: 0.9667, lng: -79.6667 }, // Ecuador Coast
+                    locations.puna
+                ],
+                geodesic: true,
+                strokeColor: "#FFA500",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            // 1531–1533 Conquest Route
+            const route1531 = new google.maps.Polyline({
+                path: [
+                    locations.panama,
+                    locations.puna,
+                    locations.tumbes,
+                    locations.cajamarca,
+                    locations.cusco
+                ],
+                geodesic: true,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            // Create Custom Markers
+            const eventMarkers = [
+                {
+                    position: locations.darien,
+                    content: "<strong>1513: Pacific Discovery</strong><br>Joined Balboa's crossing of the Isthmus"
+                },
+                {
+                    position: locations.puna,
+                    content: "<strong>1531: Puná Island Massacre</strong><br>Pre-Incan conflict before mainland invasion",
+                    icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                },
+                {
+                    position: locations.cajamarca,
+                    content: "<strong>1532: Capture of Atahualpa</strong><br>Inca Emperor captured in Cajamarca",
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: "black",
+                        fillOpacity: 1,
+                        strokeWeight: 0,
+                        scale: 8
+                    }
+                },
+                {
+                    position: locations.cusco,
+                    content: "<strong>1533: Fall of Cusco with Lucía</strong><br>Capital of Inca Empire captured"
+                }
+            ];
+
+            // Add Markers with Info Windows
+            eventMarkers.forEach(markerData => {
+                const marker = new google.maps.Marker({
+                    position: markerData.position,
+                    map: map,
+                    icon: markerData.icon || "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                    title: markerData.position.name
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: markerData.content
+                });
+
+                marker.addListener("click", () => infoWindow.open(map, marker));
+            });
+
+            // Add Routes to Map
+            route1513.setMap(map);
+            route1524.setMap(map);
+            route1531.setMap(map);
+
+            // Historical Annotation: "Line of Demarcation"
+            new google.maps.InfoWindow({
+                position: { lat: -0.5, lng: -80.0 },
+                content: "<strong>Spanish Claim Boundary</strong><br>Treaty of Tordesillas (1494)",
+                map: map
+            }).open(map);
+        }
+    </script>
+    <!-- Replace with your API key -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2Q52kvQits3bo6fuNJlH88JEyvkPIsmU&callback=initMap">
+    </script>
+</body>
+</html>

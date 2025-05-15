@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Amerigo Vespucci's 1499-1500 Voyage</title>
+    <meta charset="utf-8">
+    <style>
+        #map {
+            height: 800px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            // Map initialization
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 4,
+                center: { lat: 10, lng: -50 },
+                mapTypeId: "hybrid"
+            });
+
+            // Voyage coordinates
+            const locations = {
+                cadiz: { lat: 36.5298, lng: -6.2926, name: "Cádiz, Spain (Departure)" },
+                canary: { lat: 28.2916, lng: -16.6291, name: "Canary Islands" },
+                guyana: { lat: 5.7847, lng: -58.7314, name: "Guyana Split Point" },
+                paria: { lat: 10.5754, lng: -62.2616, name: "Gulf of Paria (Ojeda)" },
+                amazon: { lat: -0.1807, lng: -49.4544, name: "Amazon River Delta" },
+                marajo: { lat: -0.9900, lng: -49.5833, name: "Marajó Island" },
+                agostinho: { lat: -8.2881, lng: -34.9456, name: "Cape Santo Agostinho" },
+                hispaniola: { lat: 18.7357, lng: -70.1627, name: "Hispaniola" }
+            };
+
+            // Create voyage routes
+            const vespucciRoute = new google.maps.Polyline({
+                path: [
+                    locations.cadiz,
+                    locations.canary,
+                    locations.guyana,
+                    locations.amazon,
+                    locations.marajo,
+                    locations.agostinho,
+                    locations.hispaniola,
+                    locations.cadiz
+                ],
+                geodesic: true,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            const ojedaRoute = new google.maps.Polyline({
+                path: [locations.guyana, locations.paria],
+                strokeColor: "#00FF00",
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+            // Create custom markers
+            const markerIcons = {
+                anchor: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                    labelOrigin: new google.maps.Point(11, 50)
+                },
+                palm: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                }
+            };
+
+            // Add markers with info windows
+            Object.values(locations).forEach(loc => {
+                const marker = new google.maps.Marker({
+                    position: loc,
+                    map: map,
+                    title: loc.name,
+                    label: {
+                        text: "⚓",
+                        color: "#ffffff",
+                        fontSize: "16px"
+                    }
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<strong>${loc.name}</strong><br>Coordinates: ${loc.lat.toFixed(4)}°N, ${loc.lng.toFixed(4)}°W`
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.open(map, marker);
+                });
+            });
+
+            // Add annotations
+            const annotations = [
+                {
+                    position: locations.guyana,
+                    content: "<strong>Fleet Split Point</strong><br>July 1499: Vespucci and Ojeda separate"
+                },
+                {
+                    position: locations.amazon,
+                    content: "<strong>Amazon Delta</strong><br>Mistaken for the Ganges River"
+                }
+            ];
+
+            annotations.forEach(anno => {
+                const marker = new google.maps.Marker({
+                    position: anno.position,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 6,
+                        fillColor: "yellow",
+                        fillOpacity: 0.8,
+                        strokeWeight: 0
+                    }
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: anno.content
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.open(map, marker);
+                });
+            });
+
+            // Add routes to map
+            vespucciRoute.setMap(map);
+            ojedaRoute.setMap(map);
+        }
+    </script>
+    <!-- Replace with your API key -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2Q52kvQits3bo6fuNJlH88JEyvkPIsmU&callback=initMap">
+    </script>
+</body>
+</html>

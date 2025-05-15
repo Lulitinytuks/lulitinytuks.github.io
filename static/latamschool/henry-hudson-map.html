@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Henry Hudson's Voyages (1609–1611)</title>
+    <meta charset="utf-8">
+    <style>
+        #map {
+            height: 800px;
+            width: 100%;
+        }
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="legend">
+        <h3>Voyage Routes</h3>
+        <p><span style="color:#FFA500">⬤</span> 1609 Dutch Expedition (Hudson River)</p>
+        <p><span style="color:#FF0000">⬤</span> 1610–1611 English Expedition (Hudson Bay)</p>
+        <p><span style="color:#000000">⬤</span> Mutiny Location</p>
+    </div>
+
+    <script>
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 3,
+                center: { lat: 60, lng: -40 },
+                mapTypeId: "hybrid"
+            });
+
+            // Key Locations
+            const locations = {
+                amsterdam: { lat: 52.3676, lng: 4.9041, name: "Amsterdam (1609 Departure)" },
+                northCape: { lat: 71.1709, lng: 25.7833, name: "North Cape, Norway" },
+                novayaZemlya: { lat: 74.0000, lng: 56.0000, name: "Novaya Zemlya (Northeast Passage Attempt)" },
+                hudsonRiver: { lat: 40.7128, lng: -74.0060, name: "Hudson River Entrance" },
+                albany: { lat: 42.6526, lng: -73.7562, name: "Northernmost Reach (Albany, NY)" },
+                london: { lat: 51.5074, lng: -0.1278, name: "London (1610 Departure)" },
+                iceland: { lat: 64.9631, lng: -19.0208, name: "Iceland Stopover" },
+                hudsonStrait: { lat: 62.5000, lng: -71.5000, name: "Hudson Strait Entrance" },
+                jamesBay: { lat: 52.0000, lng: -80.5000, name: "James Bay (Winter 1610–11)" },
+                mutiny: { lat: 51.4833, lng: -79.4000, name: "Mutiny Location (June 1611)" }
+            };
+
+            // 1609 Voyage Route (Dutch Expedition)
+            const voyage1609 = new google.maps.Polyline({
+                path: [
+                    locations.amsterdam,
+                    locations.northCape,
+                    locations.novayaZemlya,
+                    locations.hudsonRiver,
+                    locations.albany
+                ],
+                geodesic: true,
+                strokeColor: "#FFA500",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            // 1610–1611 Voyage Route (English Expedition)
+            const voyage1610 = new google.maps.Polyline({
+                path: [
+                    locations.london,
+                    locations.iceland,
+                    locations.hudsonStrait,
+                    locations.jamesBay,
+                    locations.mutiny
+                ],
+                geodesic: true,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+
+            // Create Custom Markers
+            const markerIcons = {
+                shipwreck: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                    scaledSize: new google.maps.Size(32, 32)
+                },
+                mutiny: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: "black",
+                    fillOpacity: 1,
+                    strokeWeight: 0,
+                    scale: 8
+                }
+            };
+
+            // Add Markers with Info Windows
+            Object.values(locations).forEach(loc => {
+                const marker = new google.maps.Marker({
+                    position: loc,
+                    map: map,
+                    title: loc.name,
+                    label: {
+                        text: "⚓",
+                        color: "#ffffff",
+                        fontSize: "16px"
+                    }
+                });
+
+                const infoContent = loc.name === locations.mutiny.name 
+                    ? `<strong>${loc.name}</strong><br>Hudson and loyal crew cast adrift here`
+                    : `<strong>${loc.name}</strong>`;
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: infoContent
+                });
+
+                marker.addListener("click", () => infoWindow.open(map, marker));
+            });
+
+            // Add Mutiny Special Marker
+            new google.maps.Marker({
+                position: locations.mutiny,
+                map: map,
+                icon: markerIcons.mutiny,
+                title: "Mutiny Site"
+            });
+
+            // Add Routes to Map
+            voyage1609.setMap(map);
+            voyage1610.setMap(map);
+
+            // Add Historical Annotation
+            new google.maps.InfoWindow({
+                position: locations.novayaZemlya,
+                content: "<strong>Pivot Point</strong><br>Abandoned NE Passage attempt<br>Diverted west to North America",
+                map: map
+            }).open(map);
+        }
+    </script>
+    <!-- Replace with your API key -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2Q52kvQits3bo6fuNJlH88JEyvkPIsmU&callback=initMap">
+    </script>
+</body>
+</html>
